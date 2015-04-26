@@ -73,15 +73,33 @@ define method print-result-summary
                         else
                           as(<float>, passes) / total
                         end;
+  local method maybe-colorize
+        (value, ansi-codes :: <byte-string>, stream :: <stream>)
+     => (colorized-text :: <byte-string>)
+      if (value > 0)
+        colorize(value, ansi-codes, stream)
+      else
+        colorize(value, $color-bold, stream)
+      end if
+    end;
+  let total-text = maybe-colorize(total, $color-bold, stream);
+  let passes-text = maybe-colorize(passes, $color-green, stream);
+  let failures-text = maybe-colorize(failures, $color-red, stream);
+  let not-executed-text = maybe-colorize(not-executed,
+                                         $color-yellow, stream);
+  let not-implemented-text = maybe-colorize(not-implemented,
+                                            $color-yellow, stream);
+  let crashes-text = maybe-colorize(crashes, $color-red, stream);
   format(stream,
-         "  Ran %d %s%s: %d passed (%s%%), %d failed, %d skipped, "
-           "%d not implemented, %d crashed\n",
-         total,
+         "  Ran %s %s%s: %s passed (%s%%), %s failed, %s skipped, "
+           "%s not implemented, %s crashed\n",
+         total-text,
          name,
          if (total == 1) "" else "s" end,
-         passes,
+         passes-text,
          percent,
-         failures, not-executed, not-implemented, crashes);
+         failures-text, not-executed-text,
+         not-implemented-text, crashes-text);
 end method print-result-summary;
 
 define method print-result-info
@@ -137,9 +155,13 @@ end;
 
 define method summary-report-function
     (result :: <result>, stream :: <stream>) => ()
+  let status-text
+    = colorize(result.result-status.status-name.as-uppercase,
+               result-status->color(result.result-status),
+               stream);
   format(stream, "\n%s %s in %s seconds:\n",
          result.result-name,
-         result.result-status.status-name.as-uppercase,
+         status-text,
          result.result-time);
   local method print-class-summary (result, name, class) => ()
           print-result-summary(result, name, stream,

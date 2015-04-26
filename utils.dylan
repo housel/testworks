@@ -9,6 +9,36 @@ Warranty: Distributed WITHOUT WARRANTY OF ANY KIND
 // The active test run object.
 define thread variable *runner* :: false-or(<test-runner>) = #f;
 
+define constant $color-green = "\<1b>[32m";
+define constant $color-yellow = "\<1b>[33m";
+define constant $color-red = "\<1b>[31m";
+define constant $color-reset = "\<1b>[0m";
+define constant $color-bold = "\<1b>[1m";
+
+define function result-status->color
+    (result :: <result-status>)
+ => (ansi-codes :: <byte-string>)
+  select (result)
+    $passed => $color-green;
+    $failed => $color-red;
+    $crashed => $color-red;
+    $skipped => $color-yellow;
+    $not-implemented => $color-yellow;
+    otherwise =>
+      error("Unrecognized test result status: %=.  This is a testworks bug.",
+            result);
+  end
+end function result-status->color;
+
+define function colorize
+    (value, ansi-codes :: <byte-string>, stream :: <stream>)
+ => (colorized-text :: <byte-string>)
+  if (stream-console?(stream))
+    format-to-string("%s%s%s", ansi-codes, value, $color-reset)
+  else
+    format-to-string("%s", value)
+  end if
+end function colorize;
 
 define function add-times
     (sec1 :: <integer>, usec1 :: <integer>, sec2 :: <integer>, usec2 :: <integer>)

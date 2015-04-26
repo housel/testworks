@@ -250,13 +250,20 @@ end;
 define method show-progress
     (runner :: <test-runner>, suite :: <suite>, result :: false-or(<result>))
  => ()
+  let suite-name
+    = colorize(suite.component-name, $color-bold,
+               runner.runner-output-stream);
   if (result)
+    let status-text
+      = colorize(result.result-status.status-name.as-uppercase,
+                 result-status->color(result.result-status),
+                 runner.runner-output-stream);
     test-output("Completed suite %s: %s in %ss\n",
-                suite.component-name,
-                result.result-status.status-name.as-uppercase,
+                suite-name,
+                status-text,
                 result.result-time)
   else
-    test-output("Running suite %s:\n", suite.component-name);
+    test-output("Running suite %s:\n", suite-name);
   end;
 end method show-progress;
 
@@ -267,20 +274,27 @@ define method show-progress
   let verbose? = runner.runner-progress = $verbose;
   if (result)
     let reason = result.result-reason;
+    let status-text
+      = colorize(result.result-status.status-name.as-uppercase,
+                 result-status->color(result.result-status),
+                 runner.runner-output-stream);
     test-output("%s%s in %ss and %s\n",
                 if (verbose?)
                   format-to-string("  %s ", test.component-type-name)
                 else
                   " "
                 end,
-                result.result-status.status-name.as-uppercase,
+                status-text,
                 result.result-time,
                 format-bytes(result.result-bytes));
     reason & test-output("    %s\n", reason);
   else
+    let test-name
+      = colorize(test.component-name, $color-bold,
+                 runner.runner-output-stream);
     test-output("Running %s %s:%s",
                 test.component-type-name,
-                test.component-name,
+                test-name,
                 verbose? & "\n" | "");
   end;
 end method show-progress;
@@ -293,8 +307,12 @@ define method show-progress
   let status = result.result-status;
   let reason = result.result-reason;
   if (runner.runner-progress = $verbose)
+    let status-text
+      = colorize(status.status-name.as-uppercase,
+                 result-status->color(status),
+                 runner.runner-output-stream);
     test-output("  %s: %s%s\n",
-                status.status-name.as-uppercase,
+                status-text,
                 result.result-name,
                 reason & concatenate(" [", reason, "]") | "");
   elseif (reason)

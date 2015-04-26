@@ -9,7 +9,7 @@ Warranty:     Distributed WITHOUT WARRANTY OF ANY KIND
 define library testworks
   use command-line-parser;
   use common-dylan, import: { common-dylan, threads };
-  use io, import: { format, print, standard-io, streams };
+  use io, import: { format, print, standard-io, streams, streams-internals };
   use strings;
   use system, import: { file-system };
 
@@ -77,6 +77,7 @@ define module %testworks
   use print, import: { print-object };
   use standard-io;
   use streams;
+  use streams-internals, import: { stream-console? };
   use strings, import: { char-compare-ic, starts-with?, string-equal? };
   use testworks;
   use threads,
