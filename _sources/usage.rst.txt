@@ -664,7 +664,7 @@ After the test executes, the :program:`gcov` runtime will write
 can analyze the test suite's coverage of the library being tested
 using the :program:`llvm-cov` program included in the LLVM tools:
 
-.. code-block:: shell
+.. code-block:: console
 
     $ for da in ./_build/build/system/*.gcda; do
     >   llvm-cov gcov $da

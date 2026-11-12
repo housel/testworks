@@ -820,9 +820,9 @@ test target, for example:</p>
 <code class="docutils literal notranslate"><span class="pre">.gcda</span></code> coverage data files alongside the build object files. You
 can analyze the test suite’s coverage of the library being tested
 using the <strong class="program">llvm-cov</strong> program included in the LLVM tools:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="k">for</span><span class="w"> </span>da<span class="w"> </span><span class="k">in</span><span class="w"> </span>./_build/build/system/*.gcda<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-&gt;<span class="w">   </span>llvm-cov<span class="w"> </span>gcov<span class="w"> </span><span class="nv">$da</span>
-&gt;<span class="w"> </span><span class="k">done</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="k">for</span><span class="w"> </span>da<span class="w"> </span><span class="k">in</span><span class="w"> </span>./_build/build/system/*.gcda<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="go">&gt;   llvm-cov gcov $da</span>
+<span class="go">&gt; done</span>
 </pre></div>
 </div>
 <p>This will write a number of <code class="docutils literal notranslate"><span class="pre">.dylan.gcov</span></code> annotation files in the
